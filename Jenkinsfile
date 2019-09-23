@@ -53,8 +53,12 @@ pipeline {
                // sh "mkdir -p ~/.kube"
               //  sh "echo ${K8S_CONFIG} | base64 -d > ~/.kube/config"
                 sh "sed -e 's#{IMAGE_URL}#${params.HARBOR_HOST}/${params.DOCKER_IMAGE}#g;s#{IMAGE_TAG}#${GIT_TAG}#g;s#{APP_NAME}#${params.APP_NAME}#g;s#{SPRING_PROFILE}#k8s-test#g' k8s-deployment.tpl > k8s-deployment.yml"
-                sh "/usr/bin/kubectl get nodes"
-                sh "kubectl  apply  -f  k8s-deployment.yml"
+                
+                 withKubeConfig([credentialsId: 'k8suser', serverUrl: 'https://132.145.91.13:6443']) {
+                    sh 'kubectl get nodes'
+                   }
+                //sh "/usr/bin/kubectl get nodes"
+               // sh "kubectl  apply  -f  k8s-deployment.yml"
             }
             
         }
