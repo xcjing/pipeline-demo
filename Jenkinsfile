@@ -17,6 +17,7 @@ pipeline {
             when { expression { env.GIT_TAG != null } }
             
             steps {
+                sh "/usr/bin/kubectl get nodes"
                 sh 'mvn clean package -Dfile.encoding=UTF-8 -DskipTests=true'
                 stash includes: 'target/*.jar', name: 'app'
             }
