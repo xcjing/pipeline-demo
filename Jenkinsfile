@@ -6,6 +6,8 @@ pipeline {
         K8S_CONFIG = credentials('K8S_CONFIG')
         //GIT_TAG = sh(returnStdout: true,script: 'git describe --tags --always').trim()
         GIT_TAG = 'latest'
+        HARBOR_USR = 'admin'
+        HARBOR_PSW = 'Harbor12345'
     }
     parameters {
         string(name: 'HARBOR_HOST', defaultValue: '132.145.91.13:8099', description: 'harbor仓库地址')
@@ -33,7 +35,7 @@ pipeline {
             agent any
             steps {
                 unstash 'app'
-               // sh "docker login -u ${HARBOR_CREDS_USR} -p ${HARBOR_CREDS_PSW} ${params.HARBOR_HOST}"
+               sh "docker login -u ${HARBOR_USR} -p ${HARBOR_PSW} ${params.HARBOR_HOST}"
                 sh "docker build --build-arg JAR_FILE=`ls target/*.jar |cut -d '/' -f2` -t ${params.HARBOR_HOST}/${params.DOCKER_IMAGE}:${GIT_TAG} ."
                 sh "docker push ${params.HARBOR_HOST}/${params.DOCKER_IMAGE}:${GIT_TAG}"
                 sh "docker rmi ${params.HARBOR_HOST}/${params.DOCKER_IMAGE}:${GIT_TAG}"
