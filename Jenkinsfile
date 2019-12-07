@@ -5,7 +5,7 @@ pipeline {
         HARBOR_CREDS = credentials('jenkins-harbor-creds')
         K8S_CONFIG = credentials('K8S_CONFIG')
         //GIT_TAG = sh(returnStdout: true,script: 'git describe --tags --always').trim()
-        GIT_TAG = latest
+        GIT_TAG = 'latest'
     }
     parameters {
         string(name: 'HARBOR_HOST', defaultValue: 'http://132.145.91.13:8099', description: 'harbor仓库地址')
