@@ -4,11 +4,12 @@ pipeline {
     environment {
         HARBOR_CREDS = credentials('jenkins-harbor-creds')
         K8S_CONFIG = credentials('jenkins-k8s-config')
-        GIT_TAG = sh(returnStdout: true,script: 'git describe --tags --always').trim()
+        //GIT_TAG = sh(returnStdout: true,script: 'git describe --tags --always').trim()
+        GIT_TAG = latest
     }
     parameters {
-        string(name: 'HARBOR_HOST', defaultValue: '132.145.80.141:8099', description: 'harbor仓库地址')
-        string(name: 'DOCKER_IMAGE', defaultValue: 'xcjing/pipeline-demo', description: 'docker镜像名')
+        string(name: 'HARBOR_HOST', defaultValue: 'http://132.145.91.13/:8099', description: 'harbor仓库地址')
+        string(name: 'DOCKER_IMAGE', defaultValue: 'chunjin/pipeline-demo', description: 'docker镜像名')
         string(name: 'APP_NAME', defaultValue: 'pipeline-demo', description: 'k8s中标签名')
         string(name: 'K8S_NAMESPACE', defaultValue: 'demo', description: 'k8s的namespace名称')
     }
