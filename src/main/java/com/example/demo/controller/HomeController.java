@@ -6,9 +6,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class HomeController {
 
-    @GetMapping("/hello")
-    //@RequestMapping(value = "/hello", method= RequestMethod.GET)
+    @GetMapping("/hello/")
     public String hello() {
-        return "Hello xcj!!!!!!!!!!!";
+        return "hello";
     }
+  @GetMapping("/demo/hello/")
+    public String hello() {
+        return "demo hello";
+    }
+    
+    @GetMapping("/demo/")
+    public String hello() {
+        return "demo";
+    }
+
 }
