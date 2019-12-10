@@ -11,12 +11,12 @@ public class HomeController {
         return "hello";
     }
   @GetMapping("/demo/hello/")
-    public String hello() {
+    public String demohello() {
         return "demo hello";
     }
     
     @GetMapping("/demo/")
-    public String hello() {
+    public String demo() {
         return "demo";
     }
 
