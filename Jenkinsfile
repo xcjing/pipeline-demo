@@ -14,6 +14,7 @@ pipeline {
         string(name: 'DOCKER_IMAGE', defaultValue: 'chunjin/pipeline-demo', description: 'docker镜像名')
         string(name: 'APP_NAME', defaultValue: 'pipeline-demo', description: 'k8s中标签名')
         string(name: 'K8S_NAMESPACE', defaultValue: 'demo', description: 'k8s的namespace名称')
+         string(name: 'SEND_MAIL', defaultValue: 'no', description: 'mail')
     }
     stages {
         stage('Maven Build') {
@@ -72,4 +73,90 @@ pipeline {
         }
         
     }
+    
+    
+    
+    
+    post{
+           
+        success {
+             echo "success"
+            script {
+                if (${params.SEND_MAIL} == 'yes') {
+                   
+           emailext body: '''<!DOCTYPE html>
+        <html>
+        <head>
+        <meta charset="UTF-8">
+        </head><table>
+        <tr>
+            <td><br />
+            <b><font color="#0B610B">构建信息</font></b>
+            <hr size="2" width="100%" align="center" /></td>
+        </tr>
+        <tr>
+            <td>
+                <ul> 
+                    <li>构建名称：${JOB_NAME}</li>
+                    <li>构建结果: <span style="color:green"> ${BUILD_STATUS}</span></li> 
+                    <li>构建编号：${BUILD_NUMBER}  </li>
+                    <li>变更记录: ${CHANGES,showPaths=true,showDependencies=true,format="<pre><ul><li>提交ID: %r</li><li>提交人：%a</li><li>提交时间：%d</li><li>提交信息：%m</li><li>提交文件：<br />%p</li></ul></pre>",pathFormat="         %p <br />"}
+                </ul>
+            </td>
+            </tr>
+            </table>
+            </body>
+            </html>
+            ''', subject: '${PROJECT_NAME}第${BUILD_NUMBER}次构建结果:${BUILD_STATUS}', to: 'zhaojianwei@fawjiefang.com.cn,'
+                }
+            }
+        }
+         
+        failure {
+              echo "failure"
+            script {
+                if (${params.SEND_MAIL} == 'yes') {
+                emailext body: '''<!DOCTYPE html>
+            <html>
+            <head>
+            <meta charset="UTF-8">
+            </head>
+            <body>
+            <table>
+            <tr>
+                <td><br />
+                <b><font color="#0B610B">构建信息</font></b>
+                <hr size="2" width="100%" align="center" /></td>
+            </tr>
+            <tr>
+            <td>
+                <ul> 
+                    <li>构建名称：${JOB_NAME}</li>
+                    <li>构建结果: <span style="color:red"> ${BUILD_STATUS}</span></li>  
+                    <li>构建编号：${BUILD_NUMBER}  </li>
+                    <li>变更记录: ${CHANGES,showPaths=true,showDependencies=true,format="<pre><ul><li>提交ID: %r</li><li>提交人：%a</li><li>提交时间：%d</li><li>提交信息：%m</li><li>提交文件：%p</li></ul></pre>",pathFormat="%p <br />"}
+                </ul>
+            </td>
+        </tr>
+        <tr>
+            <td><b><font color="#0B610B">构建日志 :</font></b>
+            <hr size="2" width="100%" align="center" /></td>
+        </tr>
+        <tr>
+            <td><textarea cols="150" rows="30" readonly="readonly"
+                    style="font-family: Courier New">${BUILD_LOG}</textarea>
+            </td>
+        </tr>
+        </table>
+        </body>
+        </html>
+        ''', subject: '${PROJECT_NAME}第${BUILD_NUMBER}次构建结果:${BUILD_STATUS}', to: 'zhaojianwei@fawjiefang.com.cn,'
+            }
+            
+        }
+        }
+    }
+    
+    
+    
 }
